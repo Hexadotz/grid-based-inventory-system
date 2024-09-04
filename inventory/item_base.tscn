@@ -1,0 +1,71 @@
+[gd_scene load_steps=8 format=3 uid="uid://nbvrueu2one4"]
+
+[ext_resource type="Script" path="res://inventory/scripts/item_base.gd" id="1_tsbf5"]
+[ext_resource type="Texture2D" uid="uid://pmibeoimrild" path="res://assets/UI/Inventory/maxwell.png" id="2_cak5d"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_baij1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4j4mx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_45f8y"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wfiuw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t02w0"]
+
+[node name="Item" type="Control" node_paths=PackedStringArray("actionList", "grid_space", "textIcon", "countLabel", "shadow")]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_tsbf5")
+actionList = NodePath("MenuButton")
+grid_space = NodePath("grid_space")
+textIcon = NodePath("ItemIcon")
+countLabel = NodePath("Item_Count")
+shadow = NodePath("shadow")
+
+[node name="MenuButton" type="MenuButton" parent="."]
+layout_mode = 0
+offset_right = 42.0
+offset_bottom = 32.0
+theme_override_styles/focus = SubResource("StyleBoxFlat_baij1")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_4j4mx")
+theme_override_styles/hover = SubResource("StyleBoxFlat_45f8y")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_wfiuw")
+theme_override_styles/normal = SubResource("StyleBoxFlat_t02w0")
+button_mask = 2
+
+[node name="Item_Count" type="Label" parent="."]
+z_index = 2
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "X 19"
+
+[node name="ItemIcon" type="TextureRect" parent="."]
+z_index = 1
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+texture = ExtResource("2_cak5d")
+expand_mode = 1
+
+[node name="grid_space" type="ColorRect" parent="."]
+show_behind_parent = true
+z_index = 1
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+color = Color(1, 1, 1, 0.262745)
+
+[node name="shadow" type="ColorRect" parent="."]
+show_behind_parent = true
+top_level = true
+layout_mode = 0
+offset_right = 5.0
+offset_bottom = 5.0
+mouse_filter = 2
+color = Color(1, 0.683333, 0, 0.301961)

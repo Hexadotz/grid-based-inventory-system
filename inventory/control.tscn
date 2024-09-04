@@ -1,0 +1,48 @@
+[gd_scene load_steps=4 format=3 uid="uid://dlo7qb6rsjdyf"]
+
+[ext_resource type="PackedScene" uid="uid://tb68lqtvfbbk" path="res://entites/player/inventory/grid_base.tscn" id="1_k7w0d"]
+[ext_resource type="AudioStream" uid="uid://dgl11u618oc" path="res://assets/sounds/inventory/inv_move2.mp3" id="2_vf5gr"]
+[ext_resource type="AudioStream" uid="uid://butwf2if7f5ue" path="res://assets/sounds/inventory/inv_move.mp3" id="3_tfn2o"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Works fine" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Container" type="Container" parent="Works fine"]
+layout_mode = 0
+offset_left = 108.0
+offset_top = 156.0
+offset_right = 148.0
+offset_bottom = 196.0
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
+layout_mode = 0
+offset_left = 92.0
+offset_top = 116.0
+offset_right = 282.0
+offset_bottom = 156.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="AspectRatioContainer"]
+layout_mode = 2
+
+[node name="GridBase" parent="AspectRatioContainer/HBoxContainer" node_paths=PackedStringArray("parent_container") instance=ExtResource("1_k7w0d")]
+layout_mode = 2
+parent_container = NodePath("../..")
+mouse_moved = ExtResource("2_vf5gr")
+item_selected = ExtResource("3_tfn2o")
+
+[node name="ReferenceRect" type="ReferenceRect" parent="AspectRatioContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2

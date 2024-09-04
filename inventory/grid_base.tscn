@@ -1,0 +1,143 @@
+[gd_scene load_steps=4 format=3 uid="uid://tb68lqtvfbbk"]
+
+[ext_resource type="Script" path="res://inventory/scripts/grid_base.gd" id="1_5nbq4"]
+[ext_resource type="Texture2D" uid="uid://n7rcfk6jojsp" path="res://assets/UI/Inventory/gird_cell.png" id="1_clqgn"]
+[ext_resource type="Texture2D" uid="uid://cau3snc3sd1sw" path="res://assets/UI/Inventory/gird_cell_selected.png" id="3_xd4mv"]
+
+[node name="GridBase" type="TextureRect"]
+texture_filter = 1
+offset_right = 32.0
+offset_bottom = 32.0
+texture = ExtResource("1_clqgn")
+stretch_mode = 1
+script = ExtResource("1_5nbq4")
+grid_height = 16
+grid_width = 16
+
+[node name="HoverRect" type="TextureRect" parent="."]
+layout_direction = 1
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("3_xd4mv")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="debug pannel" type="Panel" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_bottom = 408.0
+grow_horizontal = 0
+
+[node name="Label" type="Label" parent="CanvasLayer/debug pannel"]
+layout_mode = 0
+offset_left = 73.0
+offset_top = 7.0
+offset_right = 127.0
+offset_bottom = 30.0
+text = "Penis"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/debug pannel"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 36.0
+offset_right = 198.0
+offset_bottom = 120.0
+theme_override_constants/separation = 15
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/debug pannel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="width" type="LineEdit" parent="CanvasLayer/debug pannel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+placeholder_text = "Width"
+
+[node name="height" type="LineEdit" parent="CanvasLayer/debug pannel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+placeholder_text = "Height"
+
+[node name="OptionButton" type="OptionButton" parent="CanvasLayer/debug pannel/VBoxContainer"]
+layout_mode = 2
+
+[node name="quantity" type="LineEdit" parent="CanvasLayer/debug pannel/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Quantity"
+
+[node name="DebugButton" type="Button" parent="CanvasLayer/debug pannel/VBoxContainer"]
+layout_mode = 2
+text = "Add item"
+
+[node name="HSeparator" type="HSeparator" parent="CanvasLayer/debug pannel"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 200.0
+offset_right = 189.0
+offset_bottom = 204.0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/debug pannel"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 208.0
+offset_right = 198.0
+offset_bottom = 323.0
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="CanvasLayer/debug pannel/VBoxContainer2"]
+layout_mode = 2
+text = "Change size"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/debug pannel/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Gwidth" type="LineEdit" parent="CanvasLayer/debug pannel/VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+placeholder_text = "Grid width"
+
+[node name="Gheight" type="LineEdit" parent="CanvasLayer/debug pannel/VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+placeholder_text = "Grid Height"
+
+[node name="change grid size" type="Button" parent="CanvasLayer/debug pannel/VBoxContainer2"]
+layout_mode = 2
+text = "Change Grid size"
+
+[node name="HSeparator2" type="HSeparator" parent="CanvasLayer/debug pannel"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 332.0
+offset_right = 189.0
+offset_bottom = 336.0
+
+[node name="PrintLabel" type="Label" parent="CanvasLayer/debug pannel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -92.0
+offset_top = -66.0
+offset_right = 94.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Testing"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[connection signal="focus_grid_moved" from="." to="." method="_on_focus_grid_moved"]
+[connection signal="item_rotated" from="." to="." method="_on_item_rotated"]
+[connection signal="item_swapped" from="." to="." method="_on_item_swapped"]
+[connection signal="pressed" from="CanvasLayer/debug pannel/VBoxContainer/DebugButton" to="." method="_on_debug_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/debug pannel/VBoxContainer2/change grid size" to="." method="_on_change_grid_size_pressed"]
