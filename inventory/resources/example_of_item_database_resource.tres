@@ -1,0 +1,72 @@
+[gd_resource type="Resource" script_class="ItemDataBase" load_steps=17 format=3 uid="uid://b4rfmpe48qfq"]
+
+[ext_resource type="Script" uid="uid://dk4wanmklcytn" path="res://inventory/scripts/item_data.gd" id="1_qcfvf"]
+[ext_resource type="Texture2D" uid="uid://bxwe2g5s37kiy" path="res://inventory/test_assets/test/icon_cons_medkit.png" id="2_mryb2"]
+[ext_resource type="Texture2D" uid="uid://dmfxil4wk2wik" path="res://inventory/test_assets/test/icon_wep_AK47.png" id="3_i6q67"]
+[ext_resource type="Texture2D" uid="uid://0fo1k83xiek7" path="res://inventory/test_assets/test/icon_wep_python.png" id="4_4f2md"]
+[ext_resource type="Texture2D" uid="uid://chkjppe1nldls" path="res://inventory/test_assets/test/nade.png" id="5_urrpf"]
+[ext_resource type="Texture2D" uid="uid://r4ijrs5vvmcc" path="res://inventory/test_assets/test/icon_ammo_boolets.png" id="6_ygkxl"]
+[ext_resource type="Texture2D" uid="uid://4osxvbsta7jv" path="res://inventory/test_assets/test/test.jpg" id="7_wcty1"]
+[ext_resource type="Texture2D" uid="uid://pmibeoimrild" path="res://inventory/test_assets/maxwell.png" id="8_85t0q"]
+[ext_resource type="Script" uid="uid://b023wjk1nop6s" path="res://inventory/scripts/item_dataBase.gd" id="9_3blxa"]
+
+[sub_resource type="Resource" id="Resource_buypi"]
+script = ExtResource("1_qcfvf")
+name = "con_medkit"
+icon = ExtResource("2_mryb2")
+grid_size = Vector2i(4, 3)
+stackable = true
+metadata/_custom_type_script = "uid://dk4wanmklcytn"
+
+[sub_resource type="Resource" id="Resource_njel3"]
+script = ExtResource("1_qcfvf")
+name = "wep_AK47"
+icon = ExtResource("3_i6q67")
+grid_size = Vector2i(6, 2)
+stackable = false
+metadata/_custom_type_script = "uid://dk4wanmklcytn"
+
+[sub_resource type="Resource" id="Resource_vr1i5"]
+script = ExtResource("1_qcfvf")
+name = "wep_revolver"
+icon = ExtResource("4_4f2md")
+grid_size = Vector2i(3, 3)
+stackable = false
+metadata/_custom_type_script = "uid://dk4wanmklcytn"
+
+[sub_resource type="Resource" id="Resource_rpuu0"]
+script = ExtResource("1_qcfvf")
+name = "wep_grenade"
+icon = ExtResource("5_urrpf")
+grid_size = Vector2i(2, 2)
+stackable = true
+metadata/_custom_type_script = "uid://dk4wanmklcytn"
+
+[sub_resource type="Resource" id="Resource_oo8pe"]
+script = ExtResource("1_qcfvf")
+name = "i_need_more_boolets"
+icon = ExtResource("6_ygkxl")
+grid_size = Vector2i(1, 1)
+stackable = true
+metadata/_custom_type_script = "uid://dk4wanmklcytn"
+
+[sub_resource type="Resource" id="Resource_4gito"]
+script = ExtResource("1_qcfvf")
+name = "test2"
+icon = ExtResource("7_wcty1")
+grid_size = Vector2i(4, 4)
+stackable = false
+metadata/_custom_type_script = "uid://dk4wanmklcytn"
+
+[sub_resource type="Resource" id="Resource_0k8yu"]
+script = ExtResource("1_qcfvf")
+name = "maxwell"
+icon = ExtResource("8_85t0q")
+grid_size = Vector2i(5, 3)
+stackable = false
+metadata/_custom_type_script = "uid://dk4wanmklcytn"
+
+[resource]
+script = ExtResource("9_3blxa")
+items = Array[ExtResource("1_qcfvf")]([SubResource("Resource_buypi"), SubResource("Resource_njel3"), SubResource("Resource_vr1i5"), SubResource("Resource_rpuu0"), SubResource("Resource_oo8pe"), SubResource("Resource_4gito"), SubResource("Resource_0k8yu")])
+metadata/_custom_type_script = "uid://b023wjk1nop6s"

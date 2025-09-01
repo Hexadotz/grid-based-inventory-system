@@ -1,24 +1,25 @@
 #Grid-Based Inventory system by Hexadotz
-@tool
-class_name Inventory extends TextureRect
+class_name Inventory_test extends TextureRect
 
 #NOTE: #if GridBase is a child of a container you need to use this to reference the container
 #that control GridBBases's transform not doing so will cause the hover rect to be offseted
-@export var onload: bool = false ##Loads the items from the save file
-@export var Save_file_path: String = "res://saved_data.dat"##The path the inventory data will be saved to
-@export var data: ItemDataBase ##The data resource of all the items in your game
+@export var onload: bool = false ## loads the items from the save file
+@export var Save_file_path: String = "res://saved_data.dat"
 
 @export_subgroup("Grid")
-@export var cell_size: int = 32 ##The size of each individual cell
-@export_range(1, 100, 1) var grid_height: int = 8 ##How many cells on the y axis
-@export_range(1, 100, 1) var grid_width: int = 8 ##How many cells on the x axis
-@export var hover_texture: Texture2D 
+@export var cell_size: int = 32
+@export_range(1, 100, 1) var grid_height: int = 8
+@export_range(1, 100, 1) var grid_width: int = 8
+@export var hover_texture: Texture2D
 
-var hover_rect: TextureRect # the rect used to deterimn the mouse position and where the item will be placed
+@onready var itemBase: PackedScene = preload("res://Inventory/inventory/item_base.tscn")
 
-var item_held: Item = null # the item we're currently holding
-var offset: Vector2 = Vector2.ZERO # used to keep offset from the center of the item to the mouse instead of snapping it
-var mouse_pos: Vector2 = Vector2.ZERO 
+var hover_rect: TextureRect
+var context_menu_open = false
+
+var item_held: Item = null
+var offset: Vector2 = Vector2.ZERO
+var mouse_pos: Vector2 = Vector2.ZERO
 var item_last_position: Vector2i = Vector2i.ZERO
 
 var SAVED_ITEMS: Array[Dictionary] = []
@@ -31,12 +32,12 @@ signal item_rotated() ##Emitted when the item is rotated
 @warning_ignore("unused_signal")
 signal item_swapped() ##Emitted when two items swap each other's places
 #--------------------------------------------------#
-func _enter_tree() -> void:
-	add_to_group("grid_inventory")
-
 func _ready() -> void:
+	
 	stretch_mode = TextureRect.STRETCH_TILE
 	custom_minimum_size = Vector2i(cell_size * grid_height, cell_size * grid_width)
+	
+	add_to_group("grid_inventory")
 	
 	# create the hover rect at scene startup to make the inventory more compact
 	var hover_child: TextureRect = TextureRect.new()
@@ -49,62 +50,57 @@ func _ready() -> void:
 		load_items()
 	
 	inventories = get_tree().get_nodes_in_group("grid_inventory")
-
-func _process(_delta: float) -> void:
-	custom_minimum_size = Vector2i(cell_size * grid_height, cell_size * grid_width)
+	inventories.erase(self)
 	
-	if not Engine.is_editor_hint():
-		mouse_pos = get_global_mouse_position()
-		_hover_mouse()
+
+func _physics_process(_delta: float) -> void:
+	mouse_pos = get_global_mouse_position()
+	_hover_mouse()
+	
+	if Input.is_action_just_pressed("Inv_Select"):
+		if item_held == null:
+			_grab()
+		else:
+			_release()
+	
+	if item_held != null:
+		item_held.global_position = mouse_pos + offset
 		
-		if Input.is_action_just_pressed("mouse1"):
-			if item_held == null:
-				_grab()
-			else:
-				_release()
+		# change the color depending on the placement: 
+		#	orange means it will swap the place with the item hovering over it
+		#	red means it cannont be placed because it's either outside of the zone or overlapping with multiple items
+		#	green means it's a valid spot
+		var zone: Rect2 = Rect2(hover_rect.global_position , item_held.get_global_rect().size)
+		if area_is_clear(zone, [item_held]):
+			item_held.shadow.color = item_held.VALID_SPOT
+		else:
+			# the shadow color will be orange if there is only one item in the zone otherwise it will be red 
+			item_held.shadow.color = item_held.SWITCH_SPOT if items_in_zone() == 1 else item_held.OCCUPIED_SPOT
 		
-		if item_held != null:
-			item_held.global_position = mouse_pos - item_held.size / 2
+		# rotate the item
+		if Input.is_action_just_pressed("Inv_Rotate") and not context_menu_open:  # Added context menu check
+			item_held.rotate()
 
 func _hover_mouse() -> void:
 	if get_global_rect().has_point(mouse_pos):
 		var resault_position: Vector2 = Vector2.ZERO
 		var prev_position: Vector2 = hover_rect.position # we save the previous position to compare it with the new one later
-		var snapper: Vector2 = Vector2.ZERO
-		
-		if null == item_held:
-			snapper = ((mouse_pos - global_position) - (Vector2(cell_size, cell_size) / 2))
-		else:
-			snapper = (item_held.global_position - global_position)
 		
 		# snaps the hover rectangle to the grid that is closest to the mouse
-		resault_position = snapper.snapped(Vector2(cell_size, cell_size))
-		# prevent the hover rect from leaving the inventory space
-		hover_rect.position = resault_position.clamp(Vector2.ZERO, size)
+		var snaper: Vector2 = ((mouse_pos - global_position) - (Vector2(cell_size, cell_size) / 2)) if item_held == null else (item_held.global_position - global_position)
+		resault_position = snaper.snapped(Vector2(cell_size, cell_size))
 		
-		#NOTE: remove this if you don't want to keep tracking if the mouse if moving inside the inventory
+		hover_rect.position = resault_position
+		
 		if resault_position != prev_position:
 			emit_signal("focus_grid_moved")
-
-##Returns the item resource from the given id, returns the error item if not found
-func get_item(item_id: String) -> ItemData:
-	for item in data.items:
-		if item.name == item_id:
-			return item
-	
-	var error_item: ItemData = ItemData.new()
-	error_item.name = "error"
-	error_item.icon = load("uid://b1s5lq76hs3e0")
-	printerr("item: ", item_id, " is not found!")
-	return error_item
 
 #---------------------item handeling----------------------#
 ##Adds and item using it's id, returns true if the item been added otherwise false
 func add_item(itemId: String = "", quantity: int = 1) -> bool:
 	# spawn the item in an empty place
 	var rect: Rect2i = get_global_rect()
-	#NOTE: var item_data: Dictionary = ItemsDB.get_item(itemId)
-	var item_data: ItemData = get_item(itemId)
+	var item_data: Dictionary = ItemsDB.get_item(itemId)
 	# loop through evrey cell in the inventory
 	for line in range(rect.position.y, rect.end.y, cell_size):
 		for column in range(rect.position.x, rect.end.x, cell_size):
@@ -112,32 +108,37 @@ func add_item(itemId: String = "", quantity: int = 1) -> bool:
 			var place_point: Vector2i = Vector2i(column, line) # the location we're going to place the item at
 			var area: Rect2 = Rect2(Vector2i(place_point), Vector2i(item_data.grid_size * cell_size)) # construct a bounding box from the item id to use
 			
+			
+			
 			# if the item we're adding is stackable and is already in the inventory just add to the quantity
-			if item_data.stackable:
-				for itm: Item in get_items():
-					if itm.itemData.name == itemId:
+			if item_data.stackble:
+				for itm in get_items():
+					if itm.item_id == itemId:
 						itm.quantity += quantity
 						return true
 				
+			
 			if area_is_clear(area, [item_held]):
-				var item_instance: Item = Item.new()
+				var item_instance: Item = itemBase.instantiate()
 				add_child(item_instance)
-				item_instance.prep_item(item_data)
+				item_instance.prep_item(itemId)
 				item_instance.global_position = place_point
+				item_instance.connect("context_menu_opened", _on_context_menu_opened)
+				item_instance.connect("context_menu_closed", _on_context_menu_closed)
 				
 				return true # gtfo once done
 	
-	printerr("Could not place item, inventory full")
-	return false # in case of a fuck up or the inventory is full
+	
+	push_error("Could not place item, inventory full")
+	return false
 
 func save_items() -> void:
 	SAVED_ITEMS.clear()
 	
 	for item: Item in get_items():
 		# the data that's being saved, add new properties if you need to, just make sure they are also in 
-		
 		var save_data: Dictionary = {
-			"name": item.itemData.name,
+			"id": item.item_id,
 			"pos": item.position,
 			"qty": item.quantity,
 			"rotated": item.is_rotated
@@ -146,18 +147,16 @@ func save_items() -> void:
 	print(SAVED_ITEMS)
 	
 	# save to the file after that's done
-	save_to_file(SAVED_ITEMS, Save_file_path)
+	ItemsDB.save_to_file(SAVED_ITEMS, Save_file_path)
 
 func load_items() -> void:
 	# get the items from the file
-	SAVED_ITEMS = load_from_file(Save_file_path)
+	SAVED_ITEMS = ItemsDB.load_from_file(Save_file_path)
 	
 	for item in SAVED_ITEMS:
-		var item_instance: Item = Item.new()
+		var item_instance: Item = itemBase.instantiate()
 		add_child(item_instance)
-		
-		var item_data: ItemData = get_item(item["name"])
-		item_instance.prep_item(item_data)
+		item_instance.prep_item(item["id"])
 		
 		item_instance.position = item["pos"]
 		item_instance.quantity = item["qty"]
@@ -166,7 +165,11 @@ func load_items() -> void:
 			item_instance.rotate()
 
 func _grab() -> void:
-	# if we have an item already picked up, don't bother
+	
+	if context_menu_open == true:
+		return
+	
+	# if we have an item already pickeed up, don't bother
 	if item_held != null:
 		return
 	
@@ -177,62 +180,40 @@ func _grab() -> void:
 				offset = cell.global_position - mouse_pos
 				move_child(item_held, get_child_count()) # display the item on top of the other items
 				item_last_position = cell.global_position
-				item_held.item_picked.emit()
-				return
+				item_held.actionList.disabled = true
 				
 
 func _release() -> void:
 	if item_held == null:
 		return
+		
+	item_held.actionList.disabled = false
 	
 	var area: Rect2 = Rect2(hover_rect.global_position , item_held.get_global_rect().size)
-	# for stackable item, go throught every item in the inventory if the item we're releasing it on 
-	# is the same type as the one currently holding and is stackable then add it to the quantity
+	# for stackable item, go throught evrey item in the inventory if the item we're releasing it on is the same type as the one
+	# currently holding and is stackable then add it to the quantity
 	for itm in get_items():
 		if itm != item_held and itm.stackable:
-			if itm.get_global_rect().intersects(area) and itm.itemData.name == item_held.itemData.name:
+			if itm.get_global_rect().intersects(area) and itm.item_id == item_held.item_id:
 				itm.quantity += item_held.quantity
 				# remove the item from the grid after adding its quantity
+				item_held.description_menu_open = false
 				item_held.queue_free()
-				
-				item_held.item_placed.emit()
 				item_held = null
 				return
-	
-	# if the placement is invalid
-	if not _is_a_valid_spot(area):
+
+	# if the items are different on cannot be stacked
+	if not get_global_rect().has_point(mouse_pos) or not is_inside_rect(area): # if the placement is invalid
 		item_held.global_position = item_last_position
 		item_last_position = Vector2i.ZERO
-		
-		item_held.item_placed.emit()
 		item_held = null
-		return
-	
-	for inv in inventories:
-		if inv.get_global_rect().has_point(mouse_pos):
-			area = Rect2(inv.hover_rect.global_position , item_held.get_global_rect().size)
-			if inv.area_is_clear(area, [item_held]):
-				item_held.reparent(inv)
-				item_held.global_position = inv.hover_rect.global_position
-				offset = Vector2.ZERO
-				item_held.item_placed.emit()
-				item_held = null
-				
-			#NOTE: update it to support multiple inventories
-			#else:
-			#	_swap()
-
-#func _no_item_held() -> bool:
-	#for inv: Inventory in inventories:
-		#if inv.item_held != null:
-			#return false
-	#return true
-
-func _is_a_valid_spot(area: Rect2) -> bool:
-	for inv: Inventory in inventories:
-		if inv.get_global_rect().has_point(mouse_pos) or inv.is_inside_rect(area):
-			return true
-	return false
+	else:
+		if area_is_clear(area, [item_held]):
+			item_held.global_position = hover_rect.global_position
+			offset = Vector2.ZERO
+			item_held = null
+		else:
+			_swap()
 
 func _swap() -> void:
 	var occupied: Array = []
@@ -246,8 +227,6 @@ func _swap() -> void:
 	if occupied.size() != 1 or not area_is_clear(zone, [item_held, occupied[0]]):
 		item_held.global_position = item_last_position
 		item_last_position = Vector2i.ZERO
-		
-		item_held.item_placed.emit()
 		item_held = null
 		return
 	
@@ -257,30 +236,11 @@ func _swap() -> void:
 	move_child(item_held, get_child_count())
 	emit_signal("item_swapped")
 
-#-------------------------------SAVING/LOADING---------------------------------------#
-func save_to_file(item_list: Array, file_path: String) -> void:
-	if item_list.is_empty():
-		printerr("Nothing to save!")
-		return
-	
-	var FILE: FileAccess = FileAccess.open(file_path, FileAccess.WRITE)
-	FILE.store_var(item_list)
-	print_rich("[color=green]Items saved![/color]")
-	FILE.close()
-
-func load_from_file(file_path: String) -> Array:
-	if not FileAccess.file_exists(file_path):
-		printerr("No file found!")
-	
-	var FILE: FileAccess = FileAccess.open(file_path, FileAccess.READ)
-	var items_loaded: Array = FILE.get_var()
-	FILE.close()
-	return items_loaded
 #---------------------------------------------------------#
 ##Returns the amount of items that are on top of the current held item
 func items_in_zone() -> int:
 	var count: int = 0
-	for cell: Item in get_items():
+	for cell: Item in get_items():#item_list:
 		if cell == item_held:
 			continue
 		if cell.get_global_rect().intersects(item_held.get_global_rect()):
@@ -288,7 +248,7 @@ func items_in_zone() -> int:
 	
 	return count
 
-#Checks if the area we're placing the item at isvalid (not outside the grid or on top another item)
+##Checks if the area we're placing the item at isvalid (not outside the grid or on top another item)
 func area_is_clear(zone: Rect2, execlude: Array) -> bool:
 	# check if it's on top of another item
 	for cell: Item in get_items():
@@ -317,3 +277,12 @@ func location_is_clear(pos: Vector2) -> bool:
 ##hover rect to be counted as an item
 func get_items() -> Array:
 	return get_children().slice(1, get_children().size())
+	
+func _on_context_menu_opened():
+	print("Signal Received, the menu has been opened!")
+	context_menu_open = true
+	
+func _on_context_menu_closed():
+	print("Context menu closed, signal received!")
+	context_menu_open = false
+	print(context_menu_open)

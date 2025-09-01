@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://chkjppe1nldls"
-path="res://.godot/imported/nade.png-6460a6204b2b0f5230a5681a2d271f2d.ctex"
+uid="uid://b1s5lq76hs3e0"
+path="res://.godot/imported/gird_cell_error.png-10cf2aac3b55c624d08f7f281af468e8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/UI/Inventory/test/nade.png"
-dest_files=["res://.godot/imported/nade.png-6460a6204b2b0f5230a5681a2d271f2d.ctex"]
+source_file="res://inventory/test_assets/gird_cell_error.png"
+dest_files=["res://.godot/imported/gird_cell_error.png-10cf2aac3b55c624d08f7f281af468e8.ctex"]
 
 [params]
 

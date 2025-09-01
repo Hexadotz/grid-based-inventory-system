@@ -1,20 +1,21 @@
 extends Control
-#This scene is just for testing#
+#NOTE: This scene is just for testing only it is not required for the inventory to function
+#in order to make an invetory, simply add the node to your actual scene
 
 @export var Grid_node: Inventory
+@export var inv2: Inventory
 
 #------------------------DEBUGGING-------------------------#
 func _ready() -> void:
 	_prep_itemList()
 
 func _process(_delta: float) -> void:
-	debugger_lebel.text = str(Grid_node.item_held) #NOTE: this is for debugging only remove it
-	
-	if Input.is_action_just_pressed("rotate") and Grid_node.item_held == null:
-		get_tree().reload_current_scene()
+	debugger_lebelA.text = str(Grid_node.item_held)
+	debugger_lebelB.text = str(inv2.item_held)
 
 #NOTE: remove this shit later
-@onready var debugger_lebel: Label = $"CanvasLayer/debug pannel/VBoxContainer/PrintLabel"
+@onready var debugger_lebelA: Label = $"CanvasLayer/debug pannel/VBoxContainer/inv1_lbl"
+@onready var debugger_lebelB: Label = $"CanvasLayer/debug pannel/VBoxContainer/inv2_lbl"
 @onready var quantit: LineEdit = $"CanvasLayer/debug pannel/VBoxContainer/quantity"
 func _on_debug_button_pressed() -> void:
 	#var itemSize: Vector2i = Vector2i(int($"CanvasLayer/debug pannel/VBoxContainer/HBoxContainer/width".text), int($"CanvasLayer/debug pannel/VBoxContainer/HBoxContainer/height".text))
@@ -32,18 +33,19 @@ func _on_change_grid_size_pressed() -> void:
 
 @onready var itemList: OptionButton = $"CanvasLayer/debug pannel/VBoxContainer/OptionButton"
 func _prep_itemList() -> void:
-	for ids in ItemsDB.ITEMS.keys():
-		itemList.add_item(ids)
+	for ids in Grid_node.data.items:
+		itemList.add_item(ids.name)
 	
 	itemList.add_item("null")
 
 func _on_save_btn_pressed() -> void:
-	#ItemsDB.save_to_file_test(Grid_node.SAVED_ITEMS, "res://saved_data.dat")
 	Grid_node.save_items()
 
 func _on_load_btn_pressed() -> void:
 	Grid_node.load_items()
 
 func _on_view_btn_pressed() -> void:
-	#print(Grid_node.SAVED_ITEMS)
-	print(ItemsDB.load_from_file("res://saved_data.dat"))
+	print(Grid_node.load_from_file("res://saved_data.dat"))
+
+func _on_restart_btn_pressed() -> void:
+	get_tree().reload_current_scene()

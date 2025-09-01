@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bxwe2g5s37kiy"
-path="res://.godot/imported/icon_cons_medkit.png-0fb004daa256410db77d80a7425c54c8.ctex"
+uid="uid://dmfxil4wk2wik"
+path="res://.godot/imported/icon_wep_AK47.png-c22a3fa8a6f42b733746da8ea7c46995.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/UI/Inventory/test/icon_cons_medkit.png"
-dest_files=["res://.godot/imported/icon_cons_medkit.png-0fb004daa256410db77d80a7425c54c8.ctex"]
+source_file="res://inventory/test_assets/test/icon_wep_AK47.png"
+dest_files=["res://.godot/imported/icon_wep_AK47.png-c22a3fa8a6f42b733746da8ea7c46995.ctex"]
 
 [params]
 

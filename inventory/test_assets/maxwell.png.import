@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://0fo1k83xiek7"
-path="res://.godot/imported/icon_wep_python.png-161677222a6818beb252b2a962a5e1e5.ctex"
+uid="uid://pmibeoimrild"
+path="res://.godot/imported/maxwell.png-4d4072dd9bf9a283d1b52fc990102dcb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/UI/Inventory/test/icon_wep_python.png"
-dest_files=["res://.godot/imported/icon_wep_python.png-161677222a6818beb252b2a962a5e1e5.ctex"]
+source_file="res://inventory/test_assets/maxwell.png"
+dest_files=["res://.godot/imported/maxwell.png-4d4072dd9bf9a283d1b52fc990102dcb.ctex"]
 
 [params]
 

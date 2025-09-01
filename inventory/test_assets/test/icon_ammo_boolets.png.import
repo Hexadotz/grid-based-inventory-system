@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cvvg576rfc3xk"
-path="res://.godot/imported/gird_boarder.png-a424b681a411c021d605dde41fe7598e.ctex"
+uid="uid://r4ijrs5vvmcc"
+path="res://.godot/imported/icon_ammo_boolets.png-fc35efaf876c632993d4ce8d8c2d24da.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/UI/Inventory/gird_boarder.png"
-dest_files=["res://.godot/imported/gird_boarder.png-a424b681a411c021d605dde41fe7598e.ctex"]
+source_file="res://inventory/test_assets/test/icon_ammo_boolets.png"
+dest_files=["res://.godot/imported/icon_ammo_boolets.png-fc35efaf876c632993d4ce8d8c2d24da.ctex"]
 
 [params]
 

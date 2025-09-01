@@ -13,12 +13,11 @@ config_version=5
 config/name="Grid based inventory system"
 config/tags=PackedStringArray("mini_project")
 run/main_scene="res://inventory/control.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-ItemsDB="*res://inventory/scripts/items_db.gd"
 ItemManager="*res://inventory/scripts/item_manager.gd"
 
 [debug]
@@ -36,7 +35,7 @@ window/stretch/aspect="expand"
 
 mouse1={
 "deadzone": 0.5,
-"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":1,"position":Vector2(298, 2),"global_position":Vector2(305, 40),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":1,"position":Vector2(318, 24),"global_position":Vector2(327, 72),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":true,"script":null)
 ]
 }
 mouse2={

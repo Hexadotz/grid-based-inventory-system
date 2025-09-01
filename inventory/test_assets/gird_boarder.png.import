@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://pmibeoimrild"
-path="res://.godot/imported/maxwell.png-91dc182984ccb9775e2e954d23cf0dec.ctex"
+uid="uid://cvvg576rfc3xk"
+path="res://.godot/imported/gird_boarder.png-9db137f501d31c50ffe896b6cc098f9a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/UI/Inventory/maxwell.png"
-dest_files=["res://.godot/imported/maxwell.png-91dc182984ccb9775e2e954d23cf0dec.ctex"]
+source_file="res://inventory/test_assets/gird_boarder.png"
+dest_files=["res://.godot/imported/gird_boarder.png-9db137f501d31c50ffe896b6cc098f9a.ctex"]
 
 [params]
 

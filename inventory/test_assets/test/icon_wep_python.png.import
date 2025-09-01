@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dmfxil4wk2wik"
-path="res://.godot/imported/icon_wep_AK47.png-b1773bd53e06b2ec393d06da3930fd08.ctex"
+uid="uid://0fo1k83xiek7"
+path="res://.godot/imported/icon_wep_python.png-8958963ac329405737700a32809d5cd0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/UI/Inventory/test/icon_wep_AK47.png"
-dest_files=["res://.godot/imported/icon_wep_AK47.png-b1773bd53e06b2ec393d06da3930fd08.ctex"]
+source_file="res://inventory/test_assets/test/icon_wep_python.png"
+dest_files=["res://.godot/imported/icon_wep_python.png-8958963ac329405737700a32809d5cd0.ctex"]
 
 [params]
 

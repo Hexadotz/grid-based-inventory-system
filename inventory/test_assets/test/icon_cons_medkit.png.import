@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b1s5lq76hs3e0"
-path="res://.godot/imported/gird_cell_error.png-51980eab45ecb3e22d384bacaad8f6ef.ctex"
+uid="uid://bxwe2g5s37kiy"
+path="res://.godot/imported/icon_cons_medkit.png-e9dc02fe586de1860262a3ad364fe5a9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/UI/Inventory/gird_cell_error.png"
-dest_files=["res://.godot/imported/gird_cell_error.png-51980eab45ecb3e22d384bacaad8f6ef.ctex"]
+source_file="res://inventory/test_assets/test/icon_cons_medkit.png"
+dest_files=["res://.godot/imported/icon_cons_medkit.png-e9dc02fe586de1860262a3ad364fe5a9.ctex"]
 
 [params]
 
