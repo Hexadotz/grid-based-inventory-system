@@ -12,13 +12,13 @@ config_version=5
 
 config/name="Grid based inventory system"
 config/tags=PackedStringArray("mini_project")
-run/main_scene="res://inventory/control.tscn"
-config/features=PackedStringArray("4.4", "Forward Plus")
+run/main_scene="uid://gdj1v7g6crvq"
+config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-ItemManager="*res://inventory/scripts/item_manager.gd"
+ItemManager="*res://inventory/scripts/items_manager.gd"
 
 [debug]
 

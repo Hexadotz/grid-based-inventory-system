@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ItemDataBase" load_steps=17 format=3 uid="uid://b4rfmpe48qfq"]
+[gd_resource type="Resource" script_class="ItemDB" load_steps=17 format=3 uid="uid://b4rfmpe48qfq"]
 
 [ext_resource type="Script" uid="uid://dk4wanmklcytn" path="res://inventory/scripts/item_data.gd" id="1_qcfvf"]
 [ext_resource type="Texture2D" uid="uid://bxwe2g5s37kiy" path="res://inventory/test_assets/test/icon_cons_medkit.png" id="2_mryb2"]
@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://r4ijrs5vvmcc" path="res://inventory/test_assets/test/icon_ammo_boolets.png" id="6_ygkxl"]
 [ext_resource type="Texture2D" uid="uid://4osxvbsta7jv" path="res://inventory/test_assets/test/test.jpg" id="7_wcty1"]
 [ext_resource type="Texture2D" uid="uid://pmibeoimrild" path="res://inventory/test_assets/maxwell.png" id="8_85t0q"]
-[ext_resource type="Script" uid="uid://b023wjk1nop6s" path="res://inventory/scripts/item_dataBase.gd" id="9_3blxa"]
+[ext_resource type="Script" uid="uid://b023wjk1nop6s" path="res://inventory/scripts/item_db.gd" id="9_3blxa"]
 
 [sub_resource type="Resource" id="Resource_buypi"]
 script = ExtResource("1_qcfvf")
@@ -23,7 +23,6 @@ script = ExtResource("1_qcfvf")
 name = "wep_AK47"
 icon = ExtResource("3_i6q67")
 grid_size = Vector2i(6, 2)
-stackable = false
 metadata/_custom_type_script = "uid://dk4wanmklcytn"
 
 [sub_resource type="Resource" id="Resource_vr1i5"]
@@ -31,7 +30,6 @@ script = ExtResource("1_qcfvf")
 name = "wep_revolver"
 icon = ExtResource("4_4f2md")
 grid_size = Vector2i(3, 3)
-stackable = false
 metadata/_custom_type_script = "uid://dk4wanmklcytn"
 
 [sub_resource type="Resource" id="Resource_rpuu0"]
@@ -46,7 +44,6 @@ metadata/_custom_type_script = "uid://dk4wanmklcytn"
 script = ExtResource("1_qcfvf")
 name = "i_need_more_boolets"
 icon = ExtResource("6_ygkxl")
-grid_size = Vector2i(1, 1)
 stackable = true
 metadata/_custom_type_script = "uid://dk4wanmklcytn"
 
@@ -55,7 +52,6 @@ script = ExtResource("1_qcfvf")
 name = "test2"
 icon = ExtResource("7_wcty1")
 grid_size = Vector2i(4, 4)
-stackable = false
 metadata/_custom_type_script = "uid://dk4wanmklcytn"
 
 [sub_resource type="Resource" id="Resource_0k8yu"]
@@ -63,7 +59,6 @@ script = ExtResource("1_qcfvf")
 name = "maxwell"
 icon = ExtResource("8_85t0q")
 grid_size = Vector2i(5, 3)
-stackable = false
 metadata/_custom_type_script = "uid://dk4wanmklcytn"
 
 [resource]
