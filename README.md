@@ -26,11 +26,11 @@ UPDATE: there is now a document explaining how to use this thing
 
 1. **Add the `item_db.gd` Script to Autoload**:
    - Navigate to your project’s autoload settings.
-   - Add the `item_db.gd` script as a singleton.
-   - **Important**: Name the singleton exactly as `ItemsDB` to avoid errors.
+   - Add the `items_manager.gd` script as a singleton.
+   - **Important**: Name the singleton exactly as `ItemsManager` to avoid errors.
 
 2. **Configure the `item_db.gd` Script**:
-   - Open the `item_db.gd` script.
+   - Create a resource of type `ItemDB`
    - Fill the `ITEMS` variable with the items you need. A template is provided in the script to illustrate the required structure for item definitions as well as some examples.
 
 3. **Add Items to the Inventory**:

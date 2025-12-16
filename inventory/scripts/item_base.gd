@@ -2,15 +2,15 @@ class_name Item extends TextureRect
 
 @onready var grid_map: Inventory = get_parent()
 
-var actionList: MenuButton 
+var action_list: MenuButton 
 var grid_space: ColorRect 
-var countLabel: Label
+var count_label: Label
 var shadow: ColorRect 
 
 var cur_size: Vector2 = Vector2.ZERO
 var is_rotated: bool = false
 var stackable: bool = false
-var itemData: ItemData
+var item_data: ItemData
 var quantity: int = 1
 
 var last_position: Vector2 = Vector2.ZERO
@@ -25,7 +25,7 @@ signal item_placed(item_ref: Item)
 #----------------------------------------------------------#
 func _ready() -> void:
 	_prepare_item()
-	countLabel.visible = false
+	count_label.visible = false
 	shadow.visible = false
 	ass = grid_map.inventories
 	
@@ -42,12 +42,12 @@ func _prepare_item() -> void:
 	
 	var menubtn_inst: MenuButton = MenuButton.new()
 	add_child(menubtn_inst)
-	actionList = menubtn_inst
+	action_list = menubtn_inst
 	
 	var lbl_inst: Label = Label.new()
 	add_child(lbl_inst)
-	countLabel = lbl_inst
-	countLabel.z_index = 2
+	count_label = lbl_inst
+	count_label.z_index = 2
 	
 	var colorRect_inst: ColorRect = ColorRect.new()
 	add_child(colorRect_inst)
@@ -76,7 +76,7 @@ func _process(_delta: float) -> void:
 		shadow.global_position = cur_inv.hover_rect.global_position
 	
 	if stackable:
-		countLabel.text = "X" + str(quantity)
+		count_label.text = "X" + str(quantity)
 	
 	if shadow.visible == true:
 		# change the color depending on the placement: 
@@ -94,32 +94,33 @@ func _process(_delta: float) -> void:
 		if Input.is_action_just_pressed("rotate"):
 			rotate()
 
-func prep_item(item_data: ItemData) -> void:
+func prep_item(new_item_data: ItemData, qty:int = 1) -> void:
 	#var item_property: Dictionary = ItemsDB.get_item(itemId) # get the item id from teh autoload and use it's data to configure teh item
-	cur_size = item_data.grid_size * grid_map.cell_size
+	item_data = new_item_data
+	quantity = qty
 	
-	itemData = item_data
+	cur_size = item_data.grid_size * grid_map.cell_size
 	
 	texture = item_data.icon #NOTE: you may get an error here if you don't give the item an image in the items_db.gd autoload
 	size = cur_size
 	
 	shadow.size = cur_size
 	grid_space.size = cur_size
-	actionList.size = cur_size
+	action_list.size = cur_size
 	
 	stackable = item_data.stackable
 	
-	var actionPopUp: PopupMenu = actionList.get_popup()
-	actionPopUp.add_item("Use", 0)
+	var action_popup: PopupMenu = action_list.get_popup()
+	action_popup.add_item("Use", 0)
 	
 	# if the item can be stacked, then show the amount label (Item_count) and put the number there
 	if stackable:
-		actionPopUp.add_item("Split", 1)
-		countLabel.visible = true
-		countLabel.text = "X" + str(quantity)
+		action_popup.add_item("Split", 1)
+		count_label.visible = true
+		count_label.text = "X" + str(quantity)
 	
-	actionPopUp.add_item("Drop", 2)
-	actionPopUp.id_pressed.connect(_on_menu_pressed)
+	action_popup.add_item("Drop", 2)
+	action_popup.id_pressed.connect(_on_menu_pressed)
 
 # rotates the object by fliping the extents (width and height)
 func rotate() -> void:
@@ -163,13 +164,13 @@ func _on_menu_pressed(id: int) -> void:
 
 func use() -> void:
 	# This item will call the Item manager's item used signal then from there custom functionalties is added
-	ItemManager.emit_signal("item_used", itemData, quantity)
+	ItemManager.emit_signal("item_used", item_data, quantity)
 
 func split() -> void:
 	if quantity / 2 >= 1:
 		var item_instance: Item = grid_map.itemBase.instantiate()
 		grid_map.add_child(item_instance)
-		item_instance.prep_item(itemData)
+		item_instance.prep_item(item_data)
 		grid_map.item_held = item_instance
 		
 		# configuring the quantity of the item currently held and then the one that was splited from

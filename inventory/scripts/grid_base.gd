@@ -6,7 +6,7 @@ class_name Inventory extends TextureRect
 #that control GridBBases's transform not doing so will cause the hover rect to be offseted
 @export var onload: bool = false ##Loads the items from the save file
 @export var Save_file_path: String = "res://saved_data.dat"##The path the inventory data will be saved to
-@export var data: ItemDataBase ##The data resource of all the items in your game
+@export var data: ItemDB ##The data resource of all the items in your game
 
 @export_subgroup("Grid")
 @export var cell_size: int = 32 ##The size of each individual cell
@@ -115,14 +115,15 @@ func add_item(itemId: String = "", quantity: int = 1) -> bool:
 			# if the item we're adding is stackable and is already in the inventory just add to the quantity
 			if item_data.stackable:
 				for itm: Item in get_items():
-					if itm.itemData.name == itemId:
+					if itm.item_data.name == itemId:
 						itm.quantity += quantity
 						return true
 				
 			if area_is_clear(area, [item_held]):
 				var item_instance: Item = Item.new()
 				add_child(item_instance)
-				item_instance.prep_item(item_data)
+				var qty = quantity if item_data.stackable else 1
+				item_instance.prep_item(item_data, qty)
 				item_instance.global_position = place_point
 				
 				return true # gtfo once done
@@ -137,7 +138,7 @@ func save_items() -> void:
 		# the data that's being saved, add new properties if you need to, just make sure they are also in 
 		
 		var save_data: Dictionary = {
-			"name": item.itemData.name,
+			"name": item.item_data.name,
 			"pos": item.position,
 			"qty": item.quantity,
 			"rotated": item.is_rotated
@@ -190,7 +191,7 @@ func _release() -> void:
 	# is the same type as the one currently holding and is stackable then add it to the quantity
 	for itm in get_items():
 		if itm != item_held and itm.stackable:
-			if itm.get_global_rect().intersects(area) and itm.itemData.name == item_held.itemData.name:
+			if itm.get_global_rect().intersects(area) and itm.item_data.name == item_held.item_data.name:
 				itm.quantity += item_held.quantity
 				# remove the item from the grid after adding its quantity
 				item_held.queue_free()
