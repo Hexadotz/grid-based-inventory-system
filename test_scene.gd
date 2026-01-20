@@ -39,13 +39,14 @@ func _prep_itemList() -> void:
 	item_list.add_item("null")
 
 func _on_save_btn_pressed() -> void:
-	grid.save_items()
+	grid.save_items(grid.Save_file_path)
 
 func _on_load_btn_pressed() -> void:
-	grid.load_items()
+	grid.load_items(grid.Save_file_path)
 
 func _on_view_btn_pressed() -> void:
-	print(grid.load_from_file("res://saved_data.dat"))
+	# NOTE: fix this 
+	print("ohno")
 
 func _on_restart_btn_pressed() -> void:
 	get_tree().reload_current_scene()

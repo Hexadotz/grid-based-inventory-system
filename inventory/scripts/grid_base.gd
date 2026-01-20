@@ -46,13 +46,14 @@ func _ready() -> void:
 	hover_rect = hover_child
 	
 	if onload:
-		load_items()
+		load_items(Save_file_path)
 	
 	inventories = get_tree().get_nodes_in_group("grid_inventory")
 
 func _process(_delta: float) -> void:
 	custom_minimum_size = Vector2i(cell_size * grid_height, cell_size * grid_width)
 	
+	# don't bother with the logic and functionality if we aren't actually
 	if not Engine.is_editor_hint():
 		mouse_pos = get_global_mouse_position()
 		_hover_mouse()
@@ -116,8 +117,9 @@ func add_item(itemId: String = "", quantity: int = 1) -> bool:
 			if item_data.stackable:
 				for itm: Item in get_items():
 					if itm.item_data.name == itemId:
-						itm.quantity += quantity
-						return true
+						if itm.quantity < item_data.max_quantity:
+							itm.quantity += quantity
+							return true
 				
 			if area_is_clear(area, [item_held]):
 				var item_instance: Item = Item.new()
@@ -131,40 +133,11 @@ func add_item(itemId: String = "", quantity: int = 1) -> bool:
 	printerr("Could not place item, inventory full")
 	return false # in case of a fuck up or the inventory is full
 
-func save_items() -> void:
-	SAVED_ITEMS.clear()
-	
-	for item: Item in get_items():
-		# the data that's being saved, add new properties if you need to, just make sure they are also in 
-		
-		var save_data: Dictionary = {
-			"name": item.item_data.name,
-			"pos": item.position,
-			"qty": item.quantity,
-			"rotated": item.is_rotated
-		}
-		SAVED_ITEMS.append(save_data)
-	print(SAVED_ITEMS)
-	
-	# save to the file after that's done
-	save_to_file(SAVED_ITEMS, Save_file_path)
-
-func load_items() -> void:
-	# get the items from the file
-	SAVED_ITEMS = load_from_file(Save_file_path)
-	
-	for item in SAVED_ITEMS:
-		var item_instance: Item = Item.new()
-		add_child(item_instance)
-		
-		var item_data: ItemData = get_item(item["name"])
-		item_instance.prep_item(item_data)
-		
-		item_instance.position = item["pos"]
-		item_instance.quantity = item["qty"]
-		
-		if item["rotated"]:
-			item_instance.rotate()
+func _clear_inventory() -> void:
+	for child in get_children():
+		if child == hover_rect:
+			continue
+		child.queue_free()
 
 func _grab() -> void:
 	# if we have an item already picked up, don't bother
@@ -259,24 +232,57 @@ func _swap() -> void:
 	emit_signal("item_swapped")
 
 #-------------------------------SAVING/LOADING---------------------------------------#
-func save_to_file(item_list: Array, file_path: String) -> void:
-	if item_list.is_empty():
+func save_items(file_path: String) -> void:
+	SAVED_ITEMS.clear()
+	
+	for item: Item in get_items():
+		#NOTE: 
+		var save_data: Dictionary = {
+			"name": item.item_data.name,
+			"pos": item.position,
+			"qty": item.quantity,
+			"rotated": item.is_rotated
+		}
+		SAVED_ITEMS.append(save_data)
+	
+	print(SAVED_ITEMS)
+	
+	# save to the file after that's done
+	if SAVED_ITEMS.is_empty():
 		printerr("Nothing to save!")
 		return
 	
 	var FILE: FileAccess = FileAccess.open(file_path, FileAccess.WRITE)
-	FILE.store_var(item_list)
+	FILE.store_var(SAVED_ITEMS)
 	print_rich("[color=green]Items saved![/color]")
 	FILE.close()
 
-func load_from_file(file_path: String) -> Array:
+func load_items(file_path: String) -> void:
+	# clear out previous items
+	_clear_inventory()
+	
+	# get the items from the file
 	if not FileAccess.file_exists(file_path):
 		printerr("No file found!")
 	
 	var FILE: FileAccess = FileAccess.open(file_path, FileAccess.READ)
-	var items_loaded: Array = FILE.get_var()
+	SAVED_ITEMS = FILE.get_var()
 	FILE.close()
-	return items_loaded
+	
+	for item in SAVED_ITEMS:
+		var item_instance: Item = Item.new()
+		add_child(item_instance)
+		
+		var item_data: ItemData = get_item(item["name"])
+		item_instance.prep_item(item_data)
+		
+		item_instance.position = item["pos"]
+		item_instance.quantity = item["qty"]
+		
+		if item["rotated"]:
+			item_instance.rotate()
+
+	
 #---------------------------------------------------------#
 ##Returns the amount of items that are on top of the current held item
 func items_in_zone() -> int:
@@ -302,7 +308,7 @@ func area_is_clear(zone: Rect2, execlude: Array) -> bool:
 ##Checks if the given zone if fully inside
 func is_inside_rect(zone: Rect2) -> bool:
 	# if the top left and the bottom right corners are inside the zone, then it's valid otherwise it's not valid
-	if not get_global_rect().has_point(zone.position + Vector2(1, 1)) or not get_global_rect().has_point(zone.end - Vector2(1,1)):
+	if not get_global_rect().has_point(zone.position) or not get_global_rect().has_point(zone.end - Vector2(1,1)):
 		return false
 	return true
 

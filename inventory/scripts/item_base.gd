@@ -36,6 +36,7 @@ func _ready() -> void:
 	if not ItemManager.is_connected("item_used", Callable(ItemManager, "_on_item_used")):
 		ItemManager.connect("item_used", Callable(ItemManager, "_on_item_used"))
 
+# create the node structure before instancating the visual representation of the item in the inventory
 func _prepare_item() -> void:
 	set_expand_mode(TextureRect.EXPAND_IGNORE_SIZE)
 	z_index = 1

@@ -29,6 +29,18 @@ script = ExtResource("2_e0bwv")
 data = ExtResource("4_2nij2")
 hover_texture = ExtResource("3_534d6")
 
+[node name="Inventory2" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 0
+offset_left = 280.0
+offset_right = 536.0
+offset_bottom = 256.0
+texture = ExtResource("2_qt5eq")
+stretch_mode = 1
+script = ExtResource("2_e0bwv")
+data = ExtResource("4_2nij2")
+hover_texture = ExtResource("3_534d6")
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="DebugPanel" type="Panel" parent="CanvasLayer"]
