@@ -84,13 +84,13 @@ func _process(_delta: float) -> void:
 			#	orange means it will swap the place with the item hovering over it
 			#	red means it cannont be placed because it's either outside of the zone or overlapping with multiple items
 			#	green means it's a valid spot
-		if grid_map._is_a_valid_spot(zone):
-			shadow.color = VALID_SPOT
+		if grid_map._items_in_zone(zone) == 1:
+			shadow.color = SWITCH_SPOT
+		elif not grid_map._is_inside_rect(zone) or not grid_map._area_is_clear(zone, [self]):
+			shadow.color = OCCUPIED_SPOT
 		else:
-			if not grid_map.area_is_clear(zone, [self]):
-				shadow.color = OCCUPIED_SPOT 
-			# the shadow color will be orange if there is only one item in the zone otherwise it will be red 
-			#shadow.color = SWITCH_SPOT if grid_map.items_in_zone() == 1 else OCCUPIED_SPOT 
+			if grid_map._is_a_valid_spot(zone):
+				shadow.color = VALID_SPOT
 		
 		if Input.is_action_just_pressed("rotate"):
 			rotate()

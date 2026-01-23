@@ -1,0 +1,199 @@
+[gd_scene load_steps=8 format=3 uid="uid://gdj1v7g6crvq"]
+
+[ext_resource type="Script" uid="uid://b4ep8huo2cno7" path="res://test_scene.gd" id="1_dcr3e"]
+[ext_resource type="Script" uid="uid://tssnjoa4wwkx" path="res://inventory/scripts/grid_base.gd" id="2_e0bwv"]
+[ext_resource type="Texture2D" uid="uid://n7rcfk6jojsp" path="res://inventory/test_assets/gird_cell.png" id="2_qt5eq"]
+[ext_resource type="Texture2D" uid="uid://cau3snc3sd1sw" path="res://inventory/test_assets/gird_cell_selected.png" id="3_534d6"]
+[ext_resource type="Resource" uid="uid://b4rfmpe48qfq" path="res://inventory/resources/example_of_item_database_resource.tres" id="4_2nij2"]
+[ext_resource type="Script" uid="uid://bor7qejaay8di" path="res://inventory/scripts/debugging/quantity.gd" id="6_7cbxl"]
+[ext_resource type="Script" uid="uid://bxmwh7x3evsq2" path="res://inventory/scripts/debugging/grid_size_le.gd" id="7_8pr8v"]
+
+[node name="Test_scene" type="Control" node_paths=PackedStringArray("grid")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dcr3e")
+grid = NodePath("Inventory")
+
+[node name="Inventory" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_qt5eq")
+stretch_mode = 1
+script = ExtResource("2_e0bwv")
+data = ExtResource("4_2nij2")
+hover_texture = ExtResource("3_534d6")
+
+[node name="Inventory2" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 0
+offset_left = 280.0
+offset_right = 536.0
+offset_bottom = 256.0
+texture = ExtResource("2_qt5eq")
+stretch_mode = 1
+script = ExtResource("2_e0bwv")
+data = ExtResource("4_2nij2")
+hover_texture = ExtResource("3_534d6")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="DebugPanel" type="Panel" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -208.0
+offset_bottom = 600.0
+grow_horizontal = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/DebugPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="Label2" type="Label" parent="CanvasLayer/DebugPanel/VBoxContainer"]
+layout_mode = 2
+text = "Customize"
+horizontal_alignment = 1
+
+[node name="ItemOptionDropdown" type="OptionButton" parent="CanvasLayer/DebugPanel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="QuantityVBox" type="VBoxContainer" parent="CanvasLayer/DebugPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="QuantityLabel" type="Label" parent="CanvasLayer/DebugPanel/VBoxContainer/QuantityVBox"]
+layout_mode = 2
+text = "Item Quantity"
+horizontal_alignment = 1
+
+[node name="QuantityHBox" type="HBoxContainer" parent="CanvasLayer/DebugPanel/VBoxContainer/QuantityVBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="DecreaseQuantity" type="Button" parent="CanvasLayer/DebugPanel/VBoxContainer/QuantityVBox/QuantityHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = " - "
+
+[node name="Quantity" type="LineEdit" parent="CanvasLayer/DebugPanel/VBoxContainer/QuantityVBox/QuantityHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "1"
+alignment = 1
+editable = false
+script = ExtResource("6_7cbxl")
+
+[node name="IncreaseQuantity" type="Button" parent="CanvasLayer/DebugPanel/VBoxContainer/QuantityVBox/QuantityHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = " + "
+
+[node name="AddItemButton" type="Button" parent="CanvasLayer/DebugPanel/VBoxContainer"]
+layout_mode = 2
+text = "Add item"
+
+[node name="HSeparator" type="HSeparator" parent="CanvasLayer/DebugPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/DebugPanel/VBoxContainer"]
+layout_mode = 2
+text = "Change size"
+horizontal_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/DebugPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/DebugPanel/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="CanvasLayer/DebugPanel/VBoxContainer/HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+text = "Width"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GridWidth" type="LineEdit" parent="CanvasLayer/DebugPanel/VBoxContainer/HBoxContainer2/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "1"
+placeholder_text = "1"
+alignment = 1
+script = ExtResource("7_8pr8v")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/DebugPanel/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="CanvasLayer/DebugPanel/VBoxContainer/HBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+text = "Height"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GridHeight" type="LineEdit" parent="CanvasLayer/DebugPanel/VBoxContainer/HBoxContainer2/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "1"
+placeholder_text = "1"
+alignment = 1
+script = ExtResource("7_8pr8v")
+
+[node name="ChangeGridSizeButton" type="Button" parent="CanvasLayer/DebugPanel/VBoxContainer"]
+layout_mode = 2
+text = "Change Grid size"
+
+[node name="HSeparator2" type="HSeparator" parent="CanvasLayer/DebugPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="CanvasLayer/DebugPanel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="SaveButton" type="Button" parent="CanvasLayer/DebugPanel/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+text = "Save"
+
+[node name="LoadButton" type="Button" parent="CanvasLayer/DebugPanel/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Load"
+
+[node name="ViewItemsButton" type="Button" parent="CanvasLayer/DebugPanel/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "View items"
+
+[node name="RestartButton" type="Button" parent="CanvasLayer/DebugPanel/VBoxContainer"]
+layout_mode = 2
+text = "Restart Scene"
+
+[node name="DebuggerLabel" type="Label" parent="CanvasLayer/DebugPanel/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+text = "Testing"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[connection signal="pressed" from="CanvasLayer/DebugPanel/VBoxContainer/QuantityVBox/QuantityHBox/DecreaseQuantity" to="CanvasLayer/DebugPanel/VBoxContainer/QuantityVBox/QuantityHBox/Quantity" method="_on_decrease_quantity_pressed"]
+[connection signal="pressed" from="CanvasLayer/DebugPanel/VBoxContainer/QuantityVBox/QuantityHBox/IncreaseQuantity" to="CanvasLayer/DebugPanel/VBoxContainer/QuantityVBox/QuantityHBox/Quantity" method="_on_increase_quantity_pressed"]
+[connection signal="pressed" from="CanvasLayer/DebugPanel/VBoxContainer/AddItemButton" to="." method="_on_add_item_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/DebugPanel/VBoxContainer/ChangeGridSizeButton" to="." method="_on_change_grid_size_pressed"]
+[connection signal="pressed" from="CanvasLayer/DebugPanel/VBoxContainer/HBoxContainer3/SaveButton" to="." method="_on_save_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/DebugPanel/VBoxContainer/HBoxContainer3/LoadButton" to="." method="_on_load_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/DebugPanel/VBoxContainer/HBoxContainer3/ViewItemsButton" to="." method="_on_view_btn_pressed"]
+[connection signal="pressed" from="CanvasLayer/DebugPanel/VBoxContainer/RestartButton" to="." method="_on_restart_btn_pressed"]

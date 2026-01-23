@@ -83,7 +83,7 @@ func _hover_mouse() -> void:
 		# prevent the hover rect from leaving the inventory space
 		hover_rect.position = resault_position.clamp(Vector2.ZERO, size)
 		
-		#NOTE: remove this if you don't want to keep tracking if the mouse if moving inside the inventory
+		#NOTE: comment this one out if you don't want to keep tracking if the mouse if moving inside the inventory
 		if resault_position != prev_position:
 			emit_signal("focus_grid_moved")
 
@@ -93,10 +93,11 @@ func get_item(item_id: String) -> ItemData:
 		if item.name == item_id:
 			return item
 	
+	# if the item that's going to be added isn't in the item list resource return a 1x1 error item
 	var error_item: ItemData = ItemData.new()
 	error_item.name = "error"
 	error_item.icon = load("uid://b1s5lq76hs3e0")
-	printerr("item: ", item_id, " is not found!")
+	printerr("item: '", item_id, "' is not found!")
 	return error_item
 
 #---------------------item handeling----------------------#
@@ -115,13 +116,13 @@ func add_item(itemId: String = "", quantity: int = 1) -> bool:
 			
 			# if the item we're adding is stackable and is already in the inventory just add to the quantity
 			if item_data.stackable:
-				for itm: Item in get_items():
+				for itm: Item in _get_items():
 					if itm.item_data.name == itemId:
 						if itm.quantity < item_data.max_quantity:
 							itm.quantity += quantity
 							return true
 				
-			if area_is_clear(area, [item_held]):
+			if _area_is_clear(area, [item_held]):
 				var item_instance: Item = Item.new()
 				add_child(item_instance)
 				var qty = quantity if item_data.stackable else 1
@@ -138,14 +139,14 @@ func _clear_inventory() -> void:
 		if child == hover_rect:
 			continue
 		child.queue_free()
-
+#----------------------------------------------------------------------------#
 func _grab() -> void:
 	# if we have an item already picked up, don't bother
 	if item_held != null:
 		return
 	
-	if not location_is_clear(mouse_pos) and get_global_rect().has_point(mouse_pos):
-		for cell: Item in get_items():
+	if not _location_is_clear(mouse_pos) and get_global_rect().has_point(mouse_pos):
+		for cell: Item in _get_items():
 			if cell.get_global_rect().has_point(mouse_pos):
 				item_held = cell
 				offset = cell.global_position - mouse_pos
@@ -158,20 +159,7 @@ func _grab() -> void:
 func _release() -> void:
 	if item_held == null:
 		return
-	
 	var area: Rect2 = Rect2(hover_rect.global_position , item_held.get_global_rect().size)
-	# for stackable item, go throught every item in the inventory if the item we're releasing it on 
-	# is the same type as the one currently holding and is stackable then add it to the quantity
-	for itm in get_items():
-		if itm != item_held and itm.stackable:
-			if itm.get_global_rect().intersects(area) and itm.item_data.name == item_held.item_data.name:
-				itm.quantity += item_held.quantity
-				# remove the item from the grid after adding its quantity
-				item_held.queue_free()
-				
-				item_held.item_placed.emit()
-				item_held = null
-				return
 	
 	# if the placement is invalid
 	if not _is_a_valid_spot(area):
@@ -182,51 +170,63 @@ func _release() -> void:
 		item_held = null
 		return
 	
-	for inv in inventories:
+	# for stackable item, go throught every item in the inventory if the item we're releasing it on 
+	# is the same type as the one currently holding and is stackable then add it to the quantity
+	for itm: Item in _get_items():
+		if itm == item_held:
+			continue
+			
+		if itm.stackable:
+			if itm.get_global_rect().intersects(area) and itm.item_data.name == item_held.item_data.name:
+				itm.quantity += item_held.quantity
+				# remove the item from the grid after adding its quantity
+				item_held.queue_free()
+				
+				item_held.item_placed.emit()
+				item_held = null
+				return
+	
+	for inv: Inventory in inventories:
 		if inv.get_global_rect().has_point(mouse_pos):
 			area = Rect2(inv.hover_rect.global_position , item_held.get_global_rect().size)
-			if inv.area_is_clear(area, [item_held]):
+			if inv._area_is_clear(area, [item_held]):
 				item_held.reparent(inv)
 				item_held.global_position = inv.hover_rect.global_position
 				offset = Vector2.ZERO
 				item_held.item_placed.emit()
 				item_held = null
-				
+			else:
+				if _items_in_zone(area) == 1:
+					_swap(inv)
 			#NOTE: update it to support multiple inventories
 			#else:
 			#	_swap()
 
-#func _no_item_held() -> bool:
-	#for inv: Inventory in inventories:
-		#if inv.item_held != null:
-			#return false
-	#return true
+func _swap2() -> void:
+	pass
 
-func _is_a_valid_spot(area: Rect2) -> bool:
-	for inv: Inventory in inventories:
-		if inv.get_global_rect().has_point(mouse_pos) or inv.is_inside_rect(area):
-			return true
-	return false
-
-func _swap() -> void:
-	var occupied: Array = []
-	for cell: Item in get_items():
+func _swap(inv: Inventory) -> void:
+	var occupied_item: Item = null
+	for cell: Item in inv._get_items():
 		if cell == item_held:
 			continue
-		if cell.get_global_rect().intersects(item_held.get_global_rect()):
-			occupied.append(cell)
+		if cell.get_global_rect().intersects(inv.item_held.get_global_rect()):
+			occupied_item = cell
 	
-	var zone: Rect2 = Rect2(occupied[0].global_position, item_held.size)
-	if occupied.size() != 1 or not area_is_clear(zone, [item_held, occupied[0]]):
-		item_held.global_position = item_last_position
-		item_last_position = Vector2i.ZERO
-		
-		item_held.item_placed.emit()
-		item_held = null
-		return
+	var zone: Rect2 = Rect2(occupied_item.global_position, inv.item_held.size)
+	# if the placement of the other item isn't correct (i.e swapping a large item with a small one)
+	#if not _area_is_clear(zone, [item_held, occupied_item]):
+		#item_held.global_position = item_last_position
+		#item_last_position = Vector2i.ZERO
+		#
+		#item_held.item_placed.emit()
+		#item_held = null
+		#return
 	
-	item_held.global_position = hover_rect.global_position
-	item_held = occupied[0]
+	
+	inv.item_held.global_position = hover_rect.global_position
+	inv.item_held = occupied_item
+	item_held.reparent(inv)
 	
 	move_child(item_held, get_child_count())
 	emit_signal("item_swapped")
@@ -235,7 +235,7 @@ func _swap() -> void:
 func save_items(file_path: String) -> void:
 	SAVED_ITEMS.clear()
 	
-	for item: Item in get_items():
+	for item: Item in _get_items():
 		#NOTE: 
 		var save_data: Dictionary = {
 			"name": item.item_data.name,
@@ -284,37 +284,43 @@ func load_items(file_path: String) -> void:
 
 	
 #---------------------------------------------------------#
+func _is_a_valid_spot(area: Rect2) -> bool:
+	for inv: Inventory in inventories:
+		if inv.get_global_rect().has_point(mouse_pos) or inv._is_inside_rect(area):
+			return true
+	return false
+
 ##Returns the amount of items that are on top of the current held item
-func items_in_zone() -> int:
+func _items_in_zone(zone: Rect2) -> int:
 	var count: int = 0
-	for cell: Item in get_items():
+	for cell: Item in _get_items():
 		if cell == item_held:
 			continue
-		if cell.get_global_rect().intersects(item_held.get_global_rect()):
+		if cell.get_global_rect().intersects(zone):
 			count += 1
 	
 	return count
 
 #Checks if the area we're placing the item at isvalid (not outside the grid or on top another item)
-func area_is_clear(zone: Rect2, execlude: Array) -> bool:
+func _area_is_clear(zone: Rect2, execlude: Array) -> bool:
 	# check if it's on top of another item
-	for cell: Item in get_items():
+	for cell: Item in _get_items():
 		if cell not in execlude:
 			if cell.get_global_rect().intersects(zone):
 				return false
 	
-	return is_inside_rect(zone)
+	return _is_inside_rect(zone)
 
-##Checks if the given zone if fully inside
-func is_inside_rect(zone: Rect2) -> bool:
+##Checks if the given item zone if fully inside the inventory itself
+func _is_inside_rect(zone: Rect2) -> bool:
 	# if the top left and the bottom right corners are inside the zone, then it's valid otherwise it's not valid
 	if not get_global_rect().has_point(zone.position) or not get_global_rect().has_point(zone.end - Vector2(1,1)):
 		return false
 	return true
 
 ##Checks if the position given is clear or not
-func location_is_clear(pos: Vector2) -> bool:
-	for cell: Item in get_items():
+func _location_is_clear(pos: Vector2) -> bool:
+	for cell: Item in _get_items():
 		if cell != item_held:
 			if cell.get_global_rect().has_point(pos):
 				return false
@@ -322,5 +328,5 @@ func location_is_clear(pos: Vector2) -> bool:
 
 ##Returns a list of all the items that are in the inventory, NOTE: the reason why we use the slice is because we don't want the
 ##hover rect to be counted as an item
-func get_items() -> Array:
+func _get_items() -> Array:
 	return get_children().slice(1, get_children().size())

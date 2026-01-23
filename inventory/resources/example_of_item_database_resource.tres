@@ -15,7 +15,6 @@ script = ExtResource("1_qcfvf")
 name = "con_medkit"
 icon = ExtResource("2_mryb2")
 grid_size = Vector2i(4, 3)
-max_size = 2
 metadata/_custom_type_script = "uid://dk4wanmklcytn"
 
 [sub_resource type="Resource" id="Resource_njel3"]
@@ -23,7 +22,6 @@ script = ExtResource("1_qcfvf")
 name = "wep_AK47"
 icon = ExtResource("3_i6q67")
 grid_size = Vector2i(6, 2)
-max_size = 1
 metadata/_custom_type_script = "uid://dk4wanmklcytn"
 
 [sub_resource type="Resource" id="Resource_vr1i5"]
@@ -31,7 +29,6 @@ script = ExtResource("1_qcfvf")
 name = "wep_revolver"
 icon = ExtResource("4_4f2md")
 grid_size = Vector2i(3, 3)
-max_size = 1
 metadata/_custom_type_script = "uid://dk4wanmklcytn"
 
 [sub_resource type="Resource" id="Resource_rpuu0"]
@@ -40,7 +37,6 @@ name = "wep_grenade"
 icon = ExtResource("5_urrpf")
 grid_size = Vector2i(2, 2)
 stackable = true
-max_size = 1
 metadata/_custom_type_script = "uid://dk4wanmklcytn"
 
 [sub_resource type="Resource" id="Resource_oo8pe"]
@@ -48,7 +44,6 @@ script = ExtResource("1_qcfvf")
 name = "i_need_more_boolets"
 icon = ExtResource("6_ygkxl")
 stackable = true
-max_size = 3
 metadata/_custom_type_script = "uid://dk4wanmklcytn"
 
 [sub_resource type="Resource" id="Resource_4gito"]
@@ -56,7 +51,6 @@ script = ExtResource("1_qcfvf")
 name = "test2"
 icon = ExtResource("7_wcty1")
 grid_size = Vector2i(4, 4)
-max_size = 1
 metadata/_custom_type_script = "uid://dk4wanmklcytn"
 
 [sub_resource type="Resource" id="Resource_0k8yu"]
@@ -64,7 +58,6 @@ script = ExtResource("1_qcfvf")
 name = "maxwell"
 icon = ExtResource("8_85t0q")
 grid_size = Vector2i(5, 3)
-max_size = 1
 metadata/_custom_type_script = "uid://dk4wanmklcytn"
 
 [resource]
